@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EuroRails Deal Tracker</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>EuroRails Deal Tracker</h1>
+        <div id="lobby-info" class="hidden">
+            <span>Lobby: </span><span id="current-lobby-name">Not in a lobby</span>
+            <span>Players: </span><span id="player-count">0</span>
+        </div>
+    </header>
+
+    <!-- Landing View -->
+    <section id="landing-view">
+        <div class="card">
+            <h2>Welcome to EuroRails Deal Tracker</h2>
+            <p>Create a new game lobby or join an existing one to start tracking deals.</p>
+
+            <div class="form-group">
+                <h3>Create a New Lobby</h3>
+                <input type="text" id="player-name" placeholder="Your Name" required>
+                <input type="text" id="lobby-name" placeholder="Lobby Name" required>
+                <button id="create-lobby-btn">Create Lobby</button>
+            </div>
+
+            <div class="form-group">
+                <h3>Join a Lobby</h3>
+                <input type="text" id="join-player-name" placeholder="Your Name" required>
+                <input type="text" id="join-code" placeholder="Lobby Code" required>
+                <button id="join-lobby-btn">Join Lobby</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lobby View -->
+    <section id="lobby-view" class="hidden">
+        <div class="card">
+            <h2>Lobby: <span id="lobby-display-name"></span></h2>
+            <div class="lobby-info">
+                <p>Share this code with other players: <strong id="lobby-code"></strong></p>
+                <button id="copy-code-btn">Copy Code</button>
+                <button id="generate-qr-btn">Generate QR Code</button>
+            </div>
+
+            <div id="qr-container" class="hidden">
+                <div id="qr-code"></div>
+                <button id="close-qr-btn">Close</button>
+            </div>
+
+            <h3>Players</h3>
+            <ul id="player-list"></ul>
+
+            <div class="lobby-actions">
+                <button id="propose-deal-btn">Propose a New Deal</button>
+                <button id="view-deals-btn">View Active Deals</button>
+                <button id="leave-lobby-btn">Leave Lobby</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deal Creation View -->
+    <section id="deal-creation-view" class="hidden">
+        <div class="card">
+            <h2>Propose a Deal</h2>
+
+            <div class="form-group">
+                <label for="deal-with">Propose to:</label>
+                <select id="deal-with" required></select>
+            </div>
+
+            <div class="deal-builder">
+                <h3>Deal Terms</h3>
+
+                <!-- Player Actions -->
+                <div class="deal-section">
+                    <h4>What You Will Do:</h4>
+                    <div id="your-actions"></div>
+                    <button id="add-your-action">+ Add Action</button>
+                </div>
+
+                <div class="deal-section">
+                    <h4>What They Will Do:</h4>
+                    <div id="their-actions"></div>
+                    <button id="add-their-action">+ Add Action</button>
+                </div>
+
+                <!-- Action Templates (Hidden, cloned by JS) -->
+                <div id="action-templates" class="hidden">
+                    <!-- Deliver Goods Template -->
+                    <div class="action-template" id="deliver-goods-template">
+                        <div class="action-item">
+                            <span class="action-title">Deliver Goods</span>
+                            <div class="action-details">
+                                <select class="goods-type">
+                                    <option value="steel">Steel</option>
+                                    <option value="hops">Hops</option>
+                                    <option value="oranges">Oranges</option>
+                                    <option value="wine">Wine</option>
+                                    <option value="beer">Beer</option>
+                                    <option value="cheese">Cheese</option>
+                                    <option value="other">Other...</option>
+                                </select>
+                                <input type="text" class="custom-goods hidden" placeholder="Specify goods">
+                                <input type="number" class="goods-quantity" min="1" value="1" placeholder="Quantity">
+                                <span>to</span>
+                                <input type="text" class="destination" placeholder="Destination city">
+                                <select class="delivery-condition">
+                                    <option value="leave">Will leave goods there</option>
+                                    <option value="pickup">Can be picked up by other player</option>
+                                </select>
+                            </div>
+                            <button class="remove-action">Remove</button>
+                        </div>
+                    </div>
+
+                    <!-- Payment Template -->
+                    <div class="action-template" id="payment-template">
+                        <div class="action-item">
+                            <span class="action-title">Payment</span>
+                            <div class="action-details">
+                                <span>Pay</span>
+                                <input type="number" class="payment-amount" min="1" value="10" placeholder="Amount">
+                                <span>million</span>
+                                <select class="payment-condition">
+                                    <option value="upfront">Upfront</option>
+                                    <option value="on-completion">On completion</option>
+                                    <option value="on-pickup">On pickup</option>
+                                </select>
+                            </div>
+                            <button class="remove-action">Remove</button>
+                        </div>
+                    </div>
+
+                    <!-- Track Usage Template -->
+                    <div class="action-template" id="track-usage-template">
+                        <div class="action-item">
+                            <span class="action-title">Track Usage</span>
+                            <div class="action-details">
+                                <span>Allow track usage</span>
+                                <select class="track-usage-type">
+                                    <option value="free">For free</option>
+                                    <option value="fee">For a fee</option>
+                                </select>
+                                <input type="number" class="track-usage-fee hidden" min="1" value="5" placeholder="Fee per use">
+                                <input type="number" class="track-usage-times" min="1" value="1" placeholder="Number of times">
+                                <span>times</span>
+                            </div>
+                            <button class="remove-action">Remove</button>
+                        </div>
+                    </div>
+
+                    <!-- Custom Action Template -->
+                    <div class="action-template" id="custom-action-template">
+                        <div class="action-item">
+                            <span class="action-title">Custom Action</span>
+                            <div class="action-details">
+                                <textarea class="custom-action-text" placeholder="Describe the action..."></textarea>
+                            </div>
+                            <button class="remove-action">Remove</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="deal-notes">Additional Notes:</label>
+                    <textarea id="deal-notes" placeholder="Add any additional terms or notes..."></textarea>
+                </div>
+            </div>
+
+            <div class="deal-preview">
+                <h3>Deal Summary</h3>
+                <div id="deal-summary"></div>
+            </div>
+
+            <div class="form-actions">
+                <button id="submit-deal-btn">Propose Deal</button>
+                <button id="cancel-deal-btn">Cancel</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deal Offers View -->
+    <section id="deal-offers-view" class="hidden">
+        <div class="card">
+            <h2>Deal Offers</h2>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="incoming-offers">Incoming Offers</button>
+                <button class="tab-btn" data-tab="outgoing-offers">Outgoing Offers</button>
+            </div>
+
+            <div id="incoming-offers" class="tab-content active">
+                <div class="deal-list" id="incoming-deals-list">
+                    <!-- Populated by JS -->
+                    <p class="empty-list-message">No incoming deal offers.</p>
+                </div>
+            </div>
+
+            <div id="outgoing-offers" class="tab-content">
+                <div class="deal-list" id="outgoing-deals-list">
+                    <!-- Populated by JS -->
+                    <p class="empty-list-message">No outgoing deal offers.</p>
+                </div>
+            </div>
+
+            <button id="back-to-lobby-from-offers">Back to Lobby</button>
+        </div>
+    </section>
+
+    <!-- Active Deals View -->
+    <section id="active-deals-view" class="hidden">
+        <div class="card">
+            <h2>Active Deals</h2>
+            <div class="deal-list" id="active-deals-list">
+                <!-- Populated by JS -->
+                <p class="empty-list-message">No active deals. Propose a deal to get started!</p>
+            </div>
+            <div class="form-actions">
+                <button id="back-to-lobby-btn">Back to Lobby</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deal Detail View (for viewing a specific deal) -->
+    <section id="deal-detail-view" class="hidden">
+        <div class="card">
+            <h2>Deal Details</h2>
+            <div id="deal-detail-content"></div>
+            <div class="deal-actions">
+                <button id="accept-deal-btn" class="hidden">Accept Deal</button>
+                <button id="reject-deal-btn" class="hidden">Reject Deal</button>
+                <button id="cancel-offer-btn" class="hidden">Cancel Offer</button>
+                <button id="complete-deal-btn" class="hidden">Mark as Completed</button>
+                <button id="back-from-detail-btn">Back</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <p>EuroRails Deal Tracker &copy; 2023</p>
+</footer>
+
+<div id="notification" class="hidden"></div>
+
+<script src="js/main.js"></script>
+<script src="js/lobby.js"></script>
+<script src="js/deals.js"></script>
+</body>
+</html>
