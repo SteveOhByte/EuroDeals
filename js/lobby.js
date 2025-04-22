@@ -4,7 +4,7 @@
  */
 
 // Lobby management functionality
-const LobbyManager = (function() {
+const LobbyManager = (function () {
     // Private variables
     let currentLobby = null;
     let currentPlayer = null;
@@ -45,9 +45,9 @@ const LobbyManager = (function() {
         generateQrBtn.addEventListener('click', generateQrCode);
         closeQrBtn.addEventListener('click', closeQrCode);
         leaveLobbyBtn.addEventListener('click', leaveLobby);
-        proposeDealBtn.addEventListener('click', () => ViewManager.showView('deal-creation-view'));
+        proposeDealBtn.addEventListener('click', () => ViewManager.showView('deal-creation'));
         viewDealsBtn.addEventListener('click', () => {
-            ViewManager.showView('deal-offers-view');
+            ViewManager.showView('deal-offers');
             DealManager.refreshDealLists();
         });
     }
@@ -87,7 +87,7 @@ const LobbyManager = (function() {
                     console.error('Session validation error:', error);
                     localStorage.removeItem('currentLobby');
                     localStorage.removeItem('currentPlayer');
-                    ViewManager.showView('landing-view');
+                    ViewManager.showView('landing');
                     showNotification('Your previous session has expired.', 'error');
                 });
         }
@@ -227,7 +227,7 @@ const LobbyManager = (function() {
         startPolling();
 
         // Show lobby view
-        ViewManager.showView('lobby-view');
+        ViewManager.showView('lobby');
     }
 
     // Leave the current lobby
@@ -252,7 +252,7 @@ const LobbyManager = (function() {
                 });
         } else {
             // Update the lobby with the player removed
-            const updatedLobby = { ...currentLobby, players: updatedPlayers };
+            const updatedLobby = {...currentLobby, players: updatedPlayers};
 
             // If the player leaving was the creator, assign a new creator
             if (currentPlayer.isCreator) {
@@ -293,7 +293,7 @@ const LobbyManager = (function() {
         playerCountElement.textContent = '0';
 
         // Show landing view
-        ViewManager.showView('landing-view');
+        ViewManager.showView('landing');
     }
 
     // Copy lobby code to clipboard
@@ -471,7 +471,7 @@ const LobbyManager = (function() {
                             // Delete a lobby
                             const updatedLobbies = storedLobbies.filter(l => l.id !== lobbyId);
                             localStorage.setItem('lobbies', JSON.stringify(updatedLobbies));
-                            resolve({ success: true });
+                            resolve({success: true});
                         }
                     } else {
                         reject(new Error('Invalid API endpoint'));
@@ -506,6 +506,6 @@ const LobbyManager = (function() {
 })();
 
 // Initialize lobby functionality when the DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     LobbyManager.init();
 });

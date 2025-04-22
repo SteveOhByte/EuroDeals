@@ -3,7 +3,7 @@
  */
 
 // View management system
-const ViewManager = (function() {
+const ViewManager = (function () {
     // All view IDs
     const views = [
         'landing-view',
@@ -126,6 +126,6 @@ function initializeApp() {
 }
 
 // Initialize the application when the DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeApp();
 });

@@ -4,7 +4,7 @@
  */
 
 // Deal management functionality
-const DealManager = (function() {
+const DealManager = (function () {
     // Private variables
     let currentDeal = null;
     let deals = [];
@@ -49,26 +49,26 @@ const DealManager = (function() {
         addTheirActionBtn.addEventListener('click', () => showActionTypePicker(theirActionsContainer));
         dealNotesElement.addEventListener('input', updateDealSummary);
         submitDealBtn.addEventListener('click', submitDeal);
-        cancelDealBtn.addEventListener('click', () => ViewManager.showView('lobby-view'));
+        cancelDealBtn.addEventListener('click', () => ViewManager.showView('lobby'));
 
         acceptDealBtn.addEventListener('click', acceptDeal);
         rejectDealBtn.addEventListener('click', rejectDeal);
         cancelOfferBtn.addEventListener('click', cancelOffer);
         completeDealBtn.addEventListener('click', completeDeal);
         backFromDetailBtn.addEventListener('click', () => {
-            if (ViewManager.getPreviousView() === 'deal-offers-view') {
-                ViewManager.showView('deal-offers-view');
+            if (ViewManager.getPreviousView() === 'deal-offers') {
+                ViewManager.showView('deal-offers');
             } else {
-                ViewManager.showView('active-deals-view');
+                ViewManager.showView('active-deals');
             }
         });
 
-        backToLobbyBtn.addEventListener('click', () => ViewManager.showView('lobby-view'));
-        backToLobbyFromOffersBtn.addEventListener('click', () => ViewManager.showView('lobby-view'));
+        backToLobbyBtn.addEventListener('click', () => ViewManager.showView('lobby'));
+        backToLobbyFromOffersBtn.addEventListener('click', () => ViewManager.showView('lobby'));
 
         // Tab switching
         tabButtons.forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 // Remove active class from all tabs
                 tabButtons.forEach(btn => btn.classList.remove('active'));
 
@@ -90,7 +90,7 @@ const DealManager = (function() {
         loadDeals();
 
         // Document event delegation for dynamic elements
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             // Handle deal card clicks
             if (event.target.closest('.deal-card')) {
                 const dealCard = event.target.closest('.deal-card');
@@ -116,7 +116,7 @@ const DealManager = (function() {
         });
 
         // Document event delegation for change events
-        document.addEventListener('change', function(event) {
+        document.addEventListener('change', function (event) {
             // Update deal summary when any form field changes
             if (event.target.closest('#deal-creation-view')) {
                 updateDealSummary();
@@ -309,8 +309,7 @@ const DealManager = (function() {
                 }
 
                 actions.push(actionText);
-            }
-            else if (actionType === 'Payment') {
+            } else if (actionType === 'Payment') {
                 const amount = item.querySelector('.payment-amount').value;
                 const condition = item.querySelector('.payment-condition').value;
 
@@ -324,8 +323,7 @@ const DealManager = (function() {
                 }
 
                 actions.push(actionText);
-            }
-            else if (actionType === 'Track Usage') {
+            } else if (actionType === 'Track Usage') {
                 const usageType = item.querySelector('.track-usage-type').value;
                 const times = item.querySelector('.track-usage-times').value;
 
@@ -338,8 +336,7 @@ const DealManager = (function() {
                 }
 
                 actions.push(actionText);
-            }
-            else if (actionType === 'Custom Action') {
+            } else if (actionType === 'Custom Action') {
                 const actionText = item.querySelector('.custom-action-text').value || 'Custom action';
                 actions.push(actionText);
             }
@@ -413,7 +410,7 @@ const DealManager = (function() {
         clearDealForm();
 
         // Go back to lobby
-        ViewManager.showView('lobby-view');
+        ViewManager.showView('lobby');
     }
 
     // Get detailed action data from a container
@@ -444,8 +441,7 @@ const DealManager = (function() {
                     destination: destination,
                     condition: condition
                 });
-            }
-            else if (actionType === 'Payment') {
+            } else if (actionType === 'Payment') {
                 const amount = item.querySelector('.payment-amount').value;
                 const condition = item.querySelector('.payment-condition').value;
 
@@ -454,8 +450,7 @@ const DealManager = (function() {
                     amount: amount,
                     condition: condition
                 });
-            }
-            else if (actionType === 'Track Usage') {
+            } else if (actionType === 'Track Usage') {
                 const usageType = item.querySelector('.track-usage-type').value;
                 const times = item.querySelector('.track-usage-times').value;
                 let fee = 0;
@@ -470,8 +465,7 @@ const DealManager = (function() {
                     times: times,
                     fee: fee
                 });
-            }
-            else if (actionType === 'Custom Action') {
+            } else if (actionType === 'Custom Action') {
                 const text = item.querySelector('.custom-action-text').value || 'Custom action';
 
                 actions.push({
@@ -723,7 +717,7 @@ const DealManager = (function() {
         }
 
         // Show deal detail view
-        ViewManager.showView('deal-detail-view');
+        ViewManager.showView('deal-detail');
     }
 
     // Format action for display
@@ -763,12 +757,18 @@ const DealManager = (function() {
     // Format status for display
     function formatStatus(status) {
         switch (status) {
-            case 'pending': return 'Pending Approval';
-            case 'accepted': return 'Active';
-            case 'rejected': return 'Rejected';
-            case 'completed': return 'Completed';
-            case 'cancelled': return 'Cancelled';
-            default: return status;
+            case 'pending':
+                return 'Pending Approval';
+            case 'accepted':
+                return 'Active';
+            case 'rejected':
+                return 'Rejected';
+            case 'completed':
+                return 'Completed';
+            case 'cancelled':
+                return 'Cancelled';
+            default:
+                return status;
         }
     }
 
@@ -796,7 +796,7 @@ const DealManager = (function() {
         refreshDealLists();
 
         // Go back to deals view
-        ViewManager.showView('active-deals-view');
+        ViewManager.showView('active-deals');
     }
 
     // Reject a deal
@@ -817,7 +817,7 @@ const DealManager = (function() {
         refreshDealLists();
 
         // Go back to deals view
-        ViewManager.showView('deal-offers-view');
+        ViewManager.showView('deal-offers');
     }
 
     // Cancel an offer
@@ -838,7 +838,7 @@ const DealManager = (function() {
         refreshDealLists();
 
         // Go back to deals view
-        ViewManager.showView('deal-offers-view');
+        ViewManager.showView('deal-offers');
     }
 
     // Mark a deal as completed
@@ -859,7 +859,7 @@ const DealManager = (function() {
         refreshDealLists();
 
         // Go back to active deals view
-        ViewManager.showView('active-deals-view');
+        ViewManager.showView('active-deals');
     }
 
     // Initialize the deal player selection dropdown
@@ -900,6 +900,6 @@ const DealManager = (function() {
 })();
 
 // Initialize deal functionality when the DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     DealManager.init();
 });
